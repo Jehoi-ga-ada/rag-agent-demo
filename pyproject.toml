@@ -8,7 +8,11 @@ dependencies = [
     "black>=26.1.0",
     "isort>=8.0.0",
     "langchain>=1.2.10",
+    "langchain-chroma>=1.1.0",
     "langchain-google-genai>=4.2.1",
+    "langchain-ollama>=1.0.1",
     "langchain-pinecone>=0.2.13",
+    "langchain-tavily>=0.2.17",
+    "langchain-text-splitters>=1.1.1",
     "python-dotenv>=1.2.1",
 ]
