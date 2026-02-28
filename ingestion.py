@@ -12,7 +12,8 @@ from langchain_pinecone import PineconeVectorStore
 from langchain_tavily import TavilyCrawl, TavilyExtract, TavilyMap
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from logger import Colors, log_error, log_header, log_info, log_success, log_warning
+from logger import (Colors, log_error, log_header, log_info, log_success,
+                    log_warning)
 
 load_dotenv()
 
@@ -32,15 +33,16 @@ tavily_extract = TavilyExtract()
 tavily_map = TavilyMap(max_depth=5, max_breadth=20, max_pages=1000)
 tavily_crawl = TavilyCrawl()
 
+
 async def index_document_async(documents: List[Document], batch_size: int = 50):
     log_header("VECTOR STORING")
-    
+
     batches = [
         documents[i : i + batch_size] for i in range(0, len(documents), batch_size)
     ]
-    
+
     log_info(f"Splitted into {len(batches)}")
-    
+
     async def add_batch(batch: List[Document], batch_num: int):
         try:
             await asyncio.to_thread(vector_store.add_documents, batch)
@@ -49,10 +51,10 @@ async def index_document_async(documents: List[Document], batch_size: int = 50):
             log_error(f"Vector Store Indexing: Failed to add batch {batch_num} - {e}")
             return False
         return True
-    
-    tasks = [add_batch(batch, i+1) for i, batch in enumerate(batches)]
+
+    tasks = [add_batch(batch, i + 1) for i, batch in enumerate(batches)]
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     if False in results:
         log_warning("Some of the batches failed")
     else:
@@ -64,16 +66,15 @@ async def main():
     log_header("DOCUMENTATION INGESTION PIPELINE")
 
     log_info(
-        "Tavily Crawl: Starting to Crawl documentation from https://docs.langchain.com/oss/python",
+        "Tavily Crawl: Starting to Crawl documentation from https://docs.langchain.com/",
         Colors.PURPLE,
     )
 
     res = tavily_crawl.invoke(
         {
-            "url": "https://docs.langchain.com/oss/python",
+            "url": "https://docs.langchain.com/",
             "max_depth": 5,
             "extract_depth": "advanced",
-            "instructions": "content on ai agents",
         }
     )
 
@@ -91,9 +92,9 @@ async def main():
     log_success(
         f"Text Splitter: Created {len(splitted_docs)} chunks from {len(all_docs)} documents"
     )
-    
+
     await index_document_async(splitted_docs, batch_size=100)
-    
+
     print("Done")
 
 
