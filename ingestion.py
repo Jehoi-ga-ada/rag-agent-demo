@@ -64,16 +64,16 @@ async def main():
     log_header("DOCUMENTATION INGESTION PIPELINE")
 
     log_info(
-        "Tavily Crawl: Starting to Crawl documentation from https://python.langchain.com/",
+        "Tavily Crawl: Starting to Crawl documentation from https://docs.langchain.com/oss/python",
         Colors.PURPLE,
     )
 
     res = tavily_crawl.invoke(
         {
-            "url": "https://python.langchain.com/",
+            "url": "https://docs.langchain.com/oss/python",
             "max_depth": 5,
             "extract_depth": "advanced",
-            # "instructions": "content on ai agents",
+            "instructions": "content on ai agents",
         }
     )
 
